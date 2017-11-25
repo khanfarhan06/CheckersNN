@@ -26,7 +26,7 @@ public class Game {
         MatchResult result = MatchResult.DRAWN;
         int plyCount = 1;
         do{
-            Move nextMove = toMove.bestMove(checkersBoard);
+            Move nextMove = toMove.bestMove(checkersBoard.clone());
             if (nextMove==null){
                 result = MatchResult.LOST;
                 break;

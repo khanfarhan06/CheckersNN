@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CheckersBoard {
-    Piece[][] board = new Piece[8][8];
+    public Piece[][] board = new Piece[8][8];
 
     public CheckersBoard(Piece[][] board){
         this.board = board;
