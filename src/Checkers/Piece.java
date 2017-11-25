@@ -1,3 +1,5 @@
+package Checkers;
+
 public enum Piece {
     BLACK_PAWN{
         public Alliance getAlliance(){
