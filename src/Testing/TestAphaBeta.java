@@ -6,7 +6,7 @@ import NeuralNetwork.EvaluatorNeuralNet;
 import Payers.AlphaBetaPlayer;
 import Payers.RandomPlayer;
 
-public class TestAphaBeta {
+class TestAphaBeta {
     public static void main(String[] args) {
         AlphaBetaPlayer player1 = new AlphaBetaPlayer(Alliance.WHITE, 10, new EvaluatorNeuralNet());
         RandomPlayer player2 = new RandomPlayer(Alliance.BLACK);

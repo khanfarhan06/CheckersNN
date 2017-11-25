@@ -8,8 +8,9 @@ import NeuralNetwork.EvaluatorNeuralNet;
 import java.util.List;
 
 public class AlphaBetaPlayer extends Player{
-    EvaluatorNeuralNet evaluator;
-    int depth;
+
+    private final EvaluatorNeuralNet evaluator;
+    private final int depth;
     public AlphaBetaPlayer(Alliance alliance,int depth, EvaluatorNeuralNet evaluator) {
         super(alliance);
         this.depth = depth;
@@ -18,7 +19,7 @@ public class AlphaBetaPlayer extends Player{
 
     @Override
     public Move bestMove(CheckersBoard checkersBoard) {
-        List<Move> legalMoves = checkersBoard.allMoves(this.getAlliance());
+        List<Move> legalMoves = checkersBoard.getAllMoves(this.getAlliance());
         if(legalMoves.size()==0)
             return null;
         Move bestMove = null;
@@ -55,7 +56,7 @@ public class AlphaBetaPlayer extends Player{
     private double alphabeta(CheckersBoard checkersBoard, int depth, double alpha, double beta,  Alliance alliance){
         if(depth == 0)
             return evaluator.evaluate(checkersBoard);
-        List<Move> legalMoves = checkersBoard.allMoves(alliance);
+        List<Move> legalMoves = checkersBoard.getAllMoves(alliance);
         if(legalMoves.size()==0)
             return (alliance == Alliance.WHITE)? -1.0 : 1.0;
         if(alliance == Alliance.WHITE){

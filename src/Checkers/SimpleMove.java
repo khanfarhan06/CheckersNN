@@ -1,10 +1,10 @@
 package Checkers;
 
 public class SimpleMove implements Move{
-    int initialRowPosition;
-    int finalRowPosition;
-    int initialColumnPosition;
-    int finalColumnPosition;
+    final int initialRowPosition;
+    final int finalRowPosition;
+    final int initialColumnPosition;
+    final int finalColumnPosition;
 
 
     public SimpleMove(int initialRowPosition, int initialColumnPosition, int finalRowPosition, int finalColumnPosition) {

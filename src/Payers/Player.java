@@ -5,9 +5,9 @@ import Checkers.CheckersBoard;
 import Checkers.Move;
 
 public abstract class Player {
-    Alliance alliance;
+    final Alliance alliance;
 
-    public Player(Alliance alliance) {
+    Player(Alliance alliance) {
         this.alliance = alliance;
     }
 

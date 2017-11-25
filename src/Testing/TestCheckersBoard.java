@@ -4,7 +4,7 @@ import Checkers.CheckersBoard;
 import Checkers.JumpMove;
 import Checkers.SimpleMove;
 
-public class TestCheckersBoard {
+class TestCheckersBoard {
     public static void main(String[] args) {
         CheckersBoard newCheckersBoard = new CheckersBoard();
         newCheckersBoard.initializeNewBoard();

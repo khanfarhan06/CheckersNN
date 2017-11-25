@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class RandomPlayer extends Player{
 
-    Random randomGenerator = new Random();
+    private final Random randomGenerator = new Random();
 
     public RandomPlayer(Alliance alliance) {
         super(alliance);
@@ -17,7 +17,7 @@ public class RandomPlayer extends Player{
 
     @Override
     public Move bestMove(CheckersBoard checkersBoard) {
-        List<Move> legalMoves = checkersBoard.allMoves(alliance);
+        List<Move> legalMoves = checkersBoard.getAllMoves(alliance);
         if (legalMoves.size()==0)
             return null;
         int index = randomGenerator.nextInt(legalMoves.size());

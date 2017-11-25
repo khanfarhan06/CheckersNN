@@ -3,21 +3,17 @@ package Checkers;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckersBoard {
-    public Piece[][] board = new Piece[8][8];
-
-    public CheckersBoard(Piece[][] board){
-        this.board = board;
-    }
+public class CheckersBoard implements Cloneable {
+    public final Piece[][] board = new Piece[8][8];
 
     public CheckersBoard() {
 
     }
 
     @Override
-    public CheckersBoard clone(){
+    public CheckersBoard clone() {
         CheckersBoard copy = new CheckersBoard();
-        for (int i = 0; i < 8 ; i++) {
+        for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 copy.board[i][j] = this.board[i][j];
             }
@@ -25,30 +21,30 @@ public class CheckersBoard {
         return copy;
     }
 
-    public List<Move> allMoves(Alliance toMove){
+    public List<Move> getAllMoves(Alliance toMove) {
         List<Move> legalMoves = new ArrayList<>();
-        legalMoves.addAll(allJumpMoves(toMove));
+        legalMoves.addAll(getAllJumpMoves(toMove));
         if (legalMoves.isEmpty())
-            legalMoves.addAll(allSimleMoves(toMove));
+            legalMoves.addAll(getAllSimpleMoves(toMove));
         return legalMoves;
     }
 
-    public List<JumpMove> allJumpMoves(Alliance toMove){
+    public List<JumpMove> getAllJumpMoves(Alliance toMove) {
         List<JumpMove> legalMoves = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if((i+j)%2!=0){
-                    if(board[i][j].getAlliance() == toMove){
-                        if(board[i][j].getAlliance() == Alliance.WHITE){
+                if ((i + j) % 2 != 0) {
+                    if (board[i][j].getAlliance() == toMove) {
+                        if (board[i][j].getAlliance() == Alliance.WHITE) {
                             if (board[i][j] == Piece.WHITE_PAWN)
-                                legalMoves.addAll(allJumpMovesWhitePawn(i,j));
+                                legalMoves.addAll(getAllJumpMovesWhitePawn(i, j));
                             else
-                                legalMoves.addAll(allJumpMovesWhiteKing(i,j));
-                        }else {
-                            if(board[i][j] == Piece.BLACK_PAWN)
-                                legalMoves.addAll(allJumpMovesBlackPawn(i,j));
+                                legalMoves.addAll(getAllJumpMovesWhiteKing(i, j));
+                        } else {
+                            if (board[i][j] == Piece.BLACK_PAWN)
+                                legalMoves.addAll(getAllJumpMovesBlackPawn(i, j));
                             else
-                                legalMoves.addAll(allJumpMovesBlackKing(i,j));
+                                legalMoves.addAll(getAllJumpMovesBlackKing(i, j));
                         }
                     }
                 }
@@ -57,22 +53,22 @@ public class CheckersBoard {
         return legalMoves;
     }
 
-    public List<SimpleMove> allSimleMoves(Alliance toMove){
+    private List<SimpleMove> getAllSimpleMoves(Alliance toMove) {
         List<SimpleMove> legalSimpleMoves = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if((i+j)%2!=0){
-                    if(board[i][j].getAlliance() == toMove){
-                        if(board[i][j].getAlliance() == Alliance.WHITE){
+                if ((i + j) % 2 != 0) {
+                    if (board[i][j].getAlliance() == toMove) {
+                        if (board[i][j].getAlliance() == Alliance.WHITE) {
                             if (board[i][j] == Piece.WHITE_PAWN)
-                                legalSimpleMoves.addAll(allSimpleMovesWhitePawn(i,j));
+                                legalSimpleMoves.addAll(getAllSimpleMovesWhitePawn(i, j));
                             else
-                                legalSimpleMoves.addAll(allSimpleMovesKing(i,j));
-                        }else {
-                            if(board[i][j] == Piece.BLACK_PAWN)
-                                legalSimpleMoves.addAll(allSimpleMovesBlackPawn(i,j));
+                                legalSimpleMoves.addAll(getAllSimpleMovesKing(i, j));
+                        } else {
+                            if (board[i][j] == Piece.BLACK_PAWN)
+                                legalSimpleMoves.addAll(getAllSimpleMovesBlackPawn(i, j));
                             else
-                                legalSimpleMoves.addAll(allSimpleMovesKing(i,j));
+                                legalSimpleMoves.addAll(getAllSimpleMovesKing(i, j));
                         }
                     }
                 }
@@ -81,239 +77,238 @@ public class CheckersBoard {
         return legalSimpleMoves;
     }
 
-
-    public List<JumpMove> allJumpMovesWhitePawn(int row, int column) {
+    private List<JumpMove> getAllJumpMovesWhitePawn(int row, int column) {
         List<JumpMove> legalMoves = new ArrayList<>();
-        allJumpMovesWhitePawn(legalMoves, new JumpMove(), row, column, this.clone());
+        getAllJumpMovesWhitePawn(legalMoves, new JumpMove(), row, column, this.clone());
         return legalMoves;
     }
 
-    private void allJumpMovesWhitePawn(List<JumpMove> legalMoves, JumpMove jumpMove, int row, int column, CheckersBoard checkersBoardCopy){
+    private void getAllJumpMovesWhitePawn(List<JumpMove> legalMoves, JumpMove jumpMove, int row, int column, CheckersBoard checkersBoardCopy) {
         boolean isLastJump = true;
         //TODO check if jumpmove has been made the only pass a clone of it
-        if(row>1){
-            if(column>1 && checkersBoardCopy.board[row-1][column-1].getAlliance()==Alliance.BLACK
-                    && checkersBoardCopy.board[row-2][column-2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row-2,column-2));
+        if (row > 1) {
+            if (column > 1 && checkersBoardCopy.board[row - 1][column - 1].getAlliance() == Alliance.BLACK
+                    && checkersBoardCopy.board[row - 2][column - 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row - 2, column - 2));
                 JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row-2,column-2));
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row - 2, column - 2));
                 checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesWhitePawn(legalMoves, jumpMove.clone(), row-2, column-2, checkersBoardCopy.clone());
+                getAllJumpMovesWhitePawn(legalMoves, jumpMove.clone(), row - 2, column - 2, checkersBoardCopy.clone());
                 isLastJump = false;
             }
-            if(column<6 && checkersBoardCopy.board[row-1][column+1].getAlliance()==Alliance.BLACK
-                    && checkersBoardCopy.board[row-2][column+2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row-2,column+2));
+            if (column < 6 && checkersBoardCopy.board[row - 1][column + 1].getAlliance() == Alliance.BLACK
+                    && checkersBoardCopy.board[row - 2][column + 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row - 2, column + 2));
                 JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row-2,column+2));
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row - 2, column + 2));
                 checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesWhitePawn(legalMoves, jumpMove.clone(), row-2, column+2, checkersBoardCopy.clone());
+                getAllJumpMovesWhitePawn(legalMoves, jumpMove.clone(), row - 2, column + 2, checkersBoardCopy.clone());
                 isLastJump = false;
             }
         }
-        if(isLastJump && jumpMove.jumps.size()!=0)
+        if (isLastJump && jumpMove.jumps.size() != 0)
             legalMoves.add(jumpMove);
     }
 
-    public List<JumpMove> allJumpMovesBlackPawn(int row, int column){
+    private List<JumpMove> getAllJumpMovesBlackPawn(int row, int column) {
         List<JumpMove> legalMoves = new ArrayList<>();
-        allJumpMovesBlackPawn(legalMoves, new JumpMove(), row, column, this.clone());
+        getAllJumpMovesBlackPawn(legalMoves, new JumpMove(), row, column, this.clone());
         return legalMoves;
     }
 
-    private void allJumpMovesBlackPawn(List<JumpMove> legalMoves, JumpMove jumpMove, int row, int column, CheckersBoard checkersBoardCopy){
+    private void getAllJumpMovesBlackPawn(List<JumpMove> legalMoves, JumpMove jumpMove, int row, int column, CheckersBoard checkersBoardCopy) {
         boolean isLastJump = true;
         //TODO check if jumpmove has been made the only pass a clone of it
-        if(row<6){
-            if(column>1 && checkersBoardCopy.board[row+1][column-1].getAlliance()==Alliance.WHITE
-                    && checkersBoardCopy.board[row+2][column-2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row+2,column-2));
+        if (row < 6) {
+            if (column > 1 && checkersBoardCopy.board[row + 1][column - 1].getAlliance() == Alliance.WHITE
+                    && checkersBoardCopy.board[row + 2][column - 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row + 2, column - 2));
                 JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row+2,column-2));
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row + 2, column - 2));
                 checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesWhitePawn(legalMoves,jumpMove.clone(), row+2, column-2, checkersBoardCopy.clone());
+                getAllJumpMovesWhitePawn(legalMoves, jumpMove.clone(), row + 2, column - 2, checkersBoardCopy.clone());
                 isLastJump = false;
             }
-            if(column<6 && checkersBoardCopy.board[row+1][column+1].getAlliance()==Alliance.WHITE
-                    && checkersBoardCopy.board[row+2][column+2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row+2,column+2));
+            if (column < 6 && checkersBoardCopy.board[row + 1][column + 1].getAlliance() == Alliance.WHITE
+                    && checkersBoardCopy.board[row + 2][column + 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row + 2, column + 2));
                 JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row+2,column+2));
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row + 2, column + 2));
                 checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesWhitePawn(legalMoves, jumpMove.clone(), row+2, column+2, checkersBoardCopy.clone());
+                getAllJumpMovesWhitePawn(legalMoves, jumpMove.clone(), row + 2, column + 2, checkersBoardCopy.clone());
                 isLastJump = false;
             }
         }
-        if (isLastJump && jumpMove.jumps.size()!=0)
+        if (isLastJump && jumpMove.jumps.size() != 0)
             legalMoves.add(jumpMove);
     }
 
-    public List<JumpMove> allJumpMovesWhiteKing(int row, int column){
+    private List<JumpMove> getAllJumpMovesWhiteKing(int row, int column) {
         List<JumpMove> legalMoves = new ArrayList<>();
-        allJumpMovesWhiteKing(legalMoves, new JumpMove(), row,column, this.clone());
+        getAllJumpMovesWhiteKing(legalMoves, new JumpMove(), row, column, this.clone());
         return legalMoves;
     }
 
-    private void allJumpMovesWhiteKing(List<JumpMove> legalMoves, JumpMove jumpMove, int row, int column, CheckersBoard checkersBoardCopy){
+    private void getAllJumpMovesWhiteKing(List<JumpMove> legalMoves, JumpMove jumpMove, int row, int column, CheckersBoard checkersBoardCopy) {
         boolean isLastJump = true;
-        if(row>1){
-            if(column>1 && checkersBoardCopy.board[row-1][column-1].getAlliance()==Alliance.BLACK
-                    && checkersBoardCopy.board[row-2][column-2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row-2,column-2));
+        if (row > 1) {
+            if (column > 1 && checkersBoardCopy.board[row - 1][column - 1].getAlliance() == Alliance.BLACK
+                    && checkersBoardCopy.board[row - 2][column - 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row - 2, column - 2));
                 JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row-2,column-2));
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row - 2, column - 2));
                 checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesWhiteKing(legalMoves, jumpMove.clone(), row-2, column-2, checkersBoardCopy.clone());
+                getAllJumpMovesWhiteKing(legalMoves, jumpMove.clone(), row - 2, column - 2, checkersBoardCopy.clone());
                 isLastJump = false;
             }
-            if(column<6 && checkersBoardCopy.board[row-1][column+1].getAlliance()==Alliance.BLACK
-                    && checkersBoardCopy.board[row-2][column+2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row-2,column+2));
+            if (column < 6 && checkersBoardCopy.board[row - 1][column + 1].getAlliance() == Alliance.BLACK
+                    && checkersBoardCopy.board[row - 2][column + 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row - 2, column + 2));
                 JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row-2,column+2));
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row - 2, column + 2));
                 checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesWhiteKing(legalMoves, jumpMove.clone(), row-2, column+2, checkersBoardCopy.clone());
-                isLastJump = false;
-            }
-        }
-        if(row<6){
-            if(column>1 && checkersBoardCopy.board[row+1][column-1].getAlliance()==Alliance.BLACK
-                    && checkersBoardCopy.board[row+2][column-2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row+2,column-2));
-                JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row+2,column-2));
-                checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesWhiteKing(legalMoves, jumpMove.clone(), row+2, column-2, checkersBoardCopy.clone());
-                isLastJump = false;
-            }
-            if(column<6 && checkersBoardCopy.board[row+1][column+1].getAlliance()==Alliance.BLACK
-                    && checkersBoardCopy.board[row+2][column+2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row+2,column+2));
-                JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row+2,column+2));
-                checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesWhiteKing(legalMoves, jumpMove, row+2, column+2, checkersBoardCopy.clone());
+                getAllJumpMovesWhiteKing(legalMoves, jumpMove.clone(), row - 2, column + 2, checkersBoardCopy.clone());
                 isLastJump = false;
             }
         }
-        if(isLastJump && jumpMove.jumps.size()!=0)
+        if (row < 6) {
+            if (column > 1 && checkersBoardCopy.board[row + 1][column - 1].getAlliance() == Alliance.BLACK
+                    && checkersBoardCopy.board[row + 2][column - 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row + 2, column - 2));
+                JumpMove singleJumpMove = new JumpMove();
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row + 2, column - 2));
+                checkersBoardCopy.makeJumpMove(singleJumpMove);
+                getAllJumpMovesWhiteKing(legalMoves, jumpMove.clone(), row + 2, column - 2, checkersBoardCopy.clone());
+                isLastJump = false;
+            }
+            if (column < 6 && checkersBoardCopy.board[row + 1][column + 1].getAlliance() == Alliance.BLACK
+                    && checkersBoardCopy.board[row + 2][column + 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row + 2, column + 2));
+                JumpMove singleJumpMove = new JumpMove();
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row + 2, column + 2));
+                checkersBoardCopy.makeJumpMove(singleJumpMove);
+                getAllJumpMovesWhiteKing(legalMoves, jumpMove, row + 2, column + 2, checkersBoardCopy.clone());
+                isLastJump = false;
+            }
+        }
+        if (isLastJump && jumpMove.jumps.size() != 0)
             legalMoves.add(jumpMove);
     }
 
-    public List<JumpMove> allJumpMovesBlackKing(int row, int column){
+    private List<JumpMove> getAllJumpMovesBlackKing(int row, int column) {
         List<JumpMove> legalMoves = new ArrayList<>();
-        allJumpMovesBlackKing(legalMoves,new JumpMove(), row,column, this.clone());
+        getAllJumpMovesBlackKing(legalMoves, new JumpMove(), row, column, this.clone());
         return legalMoves;
     }
 
-    private void allJumpMovesBlackKing(List<JumpMove> legalMoves ,JumpMove jumpMove, int row, int column, CheckersBoard checkersBoardCopy){
+    private void getAllJumpMovesBlackKing(List<JumpMove> legalMoves, JumpMove jumpMove, int row, int column, CheckersBoard checkersBoardCopy) {
         boolean isLastJump = true;
-        if(row>1){
-            if(column>1 && checkersBoardCopy.board[row-1][column-1].getAlliance()==Alliance.WHITE
-                    && checkersBoardCopy.board[row-2][column-2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row-2,column-2));
+        if (row > 1) {
+            if (column > 1 && checkersBoardCopy.board[row - 1][column - 1].getAlliance() == Alliance.WHITE
+                    && checkersBoardCopy.board[row - 2][column - 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row - 2, column - 2));
                 JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row-2,column-2));
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row - 2, column - 2));
                 checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesBlackKing(legalMoves,jumpMove.clone(), row-2, column-2, checkersBoardCopy.clone());
+                getAllJumpMovesBlackKing(legalMoves, jumpMove.clone(), row - 2, column - 2, checkersBoardCopy.clone());
                 isLastJump = false;
             }
-            if(column<6 && checkersBoardCopy.board[row-1][column+1].getAlliance()==Alliance.WHITE
-                    && checkersBoardCopy.board[row-2][column+2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row-2,column+2));
+            if (column < 6 && checkersBoardCopy.board[row - 1][column + 1].getAlliance() == Alliance.WHITE
+                    && checkersBoardCopy.board[row - 2][column + 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row - 2, column + 2));
                 JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row-2,column+2));
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row - 2, column + 2));
                 checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesBlackKing(legalMoves, jumpMove.clone(), row-2, column+2, checkersBoardCopy.clone());
-                isLastJump = false;
-            }
-        }
-        if(row<6){
-            if(column>1 && checkersBoardCopy.board[row+1][column-1].getAlliance()==Alliance.WHITE
-                    && checkersBoardCopy.board[row+2][column-2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row+2,column-2));
-                JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row+2,column-2));
-                checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesBlackKing(legalMoves, jumpMove.clone(), row+2, column-2, checkersBoardCopy.clone());
-                isLastJump = false;
-            }
-            if(column<6 && checkersBoardCopy.board[row+1][column+1].getAlliance()==Alliance.WHITE
-                    && checkersBoardCopy.board[row+2][column+2].getAlliance()==null){
-                jumpMove.jumps.add(new SimpleMove(row, column,row+2,column+2));
-                JumpMove singleJumpMove = new JumpMove();
-                singleJumpMove.jumps.add(new SimpleMove(row, column,row+2,column+2));
-                checkersBoardCopy.makeJumpMove(singleJumpMove);
-                allJumpMovesBlackKing(legalMoves, jumpMove.clone(), row+2, column+2, checkersBoardCopy.clone());
+                getAllJumpMovesBlackKing(legalMoves, jumpMove.clone(), row - 2, column + 2, checkersBoardCopy.clone());
                 isLastJump = false;
             }
         }
-        if(isLastJump && jumpMove.jumps.size()!=0)
+        if (row < 6) {
+            if (column > 1 && checkersBoardCopy.board[row + 1][column - 1].getAlliance() == Alliance.WHITE
+                    && checkersBoardCopy.board[row + 2][column - 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row + 2, column - 2));
+                JumpMove singleJumpMove = new JumpMove();
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row + 2, column - 2));
+                checkersBoardCopy.makeJumpMove(singleJumpMove);
+                getAllJumpMovesBlackKing(legalMoves, jumpMove.clone(), row + 2, column - 2, checkersBoardCopy.clone());
+                isLastJump = false;
+            }
+            if (column < 6 && checkersBoardCopy.board[row + 1][column + 1].getAlliance() == Alliance.WHITE
+                    && checkersBoardCopy.board[row + 2][column + 2].getAlliance() == null) {
+                jumpMove.jumps.add(new SimpleMove(row, column, row + 2, column + 2));
+                JumpMove singleJumpMove = new JumpMove();
+                singleJumpMove.jumps.add(new SimpleMove(row, column, row + 2, column + 2));
+                checkersBoardCopy.makeJumpMove(singleJumpMove);
+                getAllJumpMovesBlackKing(legalMoves, jumpMove.clone(), row + 2, column + 2, checkersBoardCopy.clone());
+                isLastJump = false;
+            }
+        }
+        if (isLastJump && jumpMove.jumps.size() != 0)
             legalMoves.add(jumpMove);
     }
 
-    public List<SimpleMove> allSimpleMovesWhitePawn(int row, int column){
+    private List<SimpleMove> getAllSimpleMovesWhitePawn(int row, int column) {
         List<SimpleMove> legalSimpleMoves = new ArrayList<>();
-        if(column>0 && this.board[row-1][column-1].getAlliance()==null)
-            legalSimpleMoves.add(new SimpleMove(row,column,row-1,column-1));
-        if(column<7 && this.board[row-1][column+1].getAlliance()==null)
-            legalSimpleMoves.add(new SimpleMove(row,column,row-1,column+1));
+        if (column > 0 && this.board[row - 1][column - 1].getAlliance() == null)
+            legalSimpleMoves.add(new SimpleMove(row, column, row - 1, column - 1));
+        if (column < 7 && this.board[row - 1][column + 1].getAlliance() == null)
+            legalSimpleMoves.add(new SimpleMove(row, column, row - 1, column + 1));
         return legalSimpleMoves;
     }
 
-    public List<SimpleMove> allSimpleMovesBlackPawn(int row, int column){
+    private List<SimpleMove> getAllSimpleMovesBlackPawn(int row, int column) {
         List<SimpleMove> legalSimpleMoves = new ArrayList<>();
-        try{
-            if(column>0 && this.board[row+1][column-1].getAlliance()==null)
-                legalSimpleMoves.add(new SimpleMove(row,column,row+1,column-1));
-            if(column<7 && this.board[row+1][column+1].getAlliance()==null)
-                legalSimpleMoves.add(new SimpleMove(row,column,row+1,column+1));
-        }catch (ArrayIndexOutOfBoundsException e){
-            System.err.println("row: "+row);
-            System.err.println("column: "+column);
-            System.err.println("Piece: "+ board[row][column]);
+        try {
+            if (column > 0 && this.board[row + 1][column - 1].getAlliance() == null)
+                legalSimpleMoves.add(new SimpleMove(row, column, row + 1, column - 1));
+            if (column < 7 && this.board[row + 1][column + 1].getAlliance() == null)
+                legalSimpleMoves.add(new SimpleMove(row, column, row + 1, column + 1));
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println("row: " + row);
+            System.err.println("column: " + column);
+            System.err.println("Piece: " + board[row][column]);
             e.printStackTrace();
         }
         return legalSimpleMoves;
     }
 
-    public List<SimpleMove> allSimpleMovesKing(int row, int column){
+    private List<SimpleMove> getAllSimpleMovesKing(int row, int column) {
         List<SimpleMove> legalSimpleMoves = new ArrayList<>();
-        if(column>0 && row>0 && this.board[row-1][column-1].getAlliance()==null)
-            legalSimpleMoves.add(new SimpleMove(row,column,row-1,column-1));
-        if(column<7 && row>0 && this.board[row-1][column+1].getAlliance()==null)
-            legalSimpleMoves.add(new SimpleMove(row,column,row-1,column+1));
-        if(column>0 && row<7 && this.board[row+1][column-1].getAlliance()==null)
-            legalSimpleMoves.add(new SimpleMove(row,column,row+1,column-1));
-        if(column<7 && row<7 && this.board[row+1][column+1].getAlliance()==null)
-            legalSimpleMoves.add(new SimpleMove(row,column,row+1,column+1));
+        if (column > 0 && row > 0 && this.board[row - 1][column - 1].getAlliance() == null)
+            legalSimpleMoves.add(new SimpleMove(row, column, row - 1, column - 1));
+        if (column < 7 && row > 0 && this.board[row - 1][column + 1].getAlliance() == null)
+            legalSimpleMoves.add(new SimpleMove(row, column, row - 1, column + 1));
+        if (column > 0 && row < 7 && this.board[row + 1][column - 1].getAlliance() == null)
+            legalSimpleMoves.add(new SimpleMove(row, column, row + 1, column - 1));
+        if (column < 7 && row < 7 && this.board[row + 1][column + 1].getAlliance() == null)
+            legalSimpleMoves.add(new SimpleMove(row, column, row + 1, column + 1));
         return legalSimpleMoves;
     }
 
-    public void makeMove(Move move){
+    public void makeMove(Move move) {
         if (move instanceof JumpMove)
             makeJumpMove((JumpMove) move);
         else
-            makeSimpleMove((SimpleMove)move);
+            makeSimpleMove((SimpleMove) move);
     }
 
-    public void upgradeToKing(Alliance toMove){
-        int lastRow = (toMove == Alliance.WHITE)? 0 : 7;
+    public void upgradeToKing(Alliance toMove) {
+        int lastRow = (toMove == Alliance.WHITE) ? 0 : 7;
         for (int j = 0; j < 8; j++) {
-            if ((lastRow+j)%2!=0)
-                if(board[lastRow][j].getAlliance() == toMove)
-                    board[lastRow][j] = (toMove==Alliance.WHITE)? Piece.WHITE_KING:Piece.BLACK_KING;
+            if ((lastRow + j) % 2 != 0)
+                if (board[lastRow][j].getAlliance() == toMove)
+                    board[lastRow][j] = (toMove == Alliance.WHITE) ? Piece.WHITE_KING : Piece.BLACK_KING;
         }
     }
 
     public void makeJumpMove(JumpMove jumpMove) {
-        for(SimpleMove simpleMove : jumpMove.jumps){
+        for (SimpleMove simpleMove : jumpMove.jumps) {
             int initialRow = simpleMove.initialRowPosition;
             int initialColumn = simpleMove.initialColumnPosition;
             int finalRow = simpleMove.finalRowPosition;
             int finalColumn = simpleMove.finalColumnPosition;
-            int midRow = (initialRow+finalRow)/2;
-            int midColumn = (initialColumn+finalColumn)/2;
+            int midRow = (initialRow + finalRow) / 2;
+            int midColumn = (initialColumn + finalColumn) / 2;
 
             board[midRow][midColumn] = Piece.EMPTY;
             board[finalRow][finalColumn] = board[initialRow][initialColumn];
@@ -321,16 +316,16 @@ public class CheckersBoard {
         }
     }
 
-    public void makeSimpleMove(SimpleMove simpleMove){
+    public void makeSimpleMove(SimpleMove simpleMove) {
         board[simpleMove.finalRowPosition][simpleMove.finalColumnPosition] = board[simpleMove.initialRowPosition][simpleMove.initialColumnPosition];
         board[simpleMove.initialRowPosition][simpleMove.initialColumnPosition] = Piece.EMPTY;
 
     }
 
-    public void showBoard(){
+    public void showBoard() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if((i+j)%2!=0)
+                if ((i + j) % 2 != 0)
                     System.out.print(board[i][j]);
                 else
                     System.out.print("-");
@@ -339,13 +334,13 @@ public class CheckersBoard {
         }
     }
 
-    public void initializeNewBoard(){
+    public void initializeNewBoard() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if((i+j)%2!=0){
-                    if (i<3)
+                if ((i + j) % 2 != 0) {
+                    if (i < 3)
                         board[i][j] = Piece.BLACK_PAWN;
-                    else if(i>4)
+                    else if (i > 4)
                         board[i][j] = Piece.WHITE_PAWN;
                     else
                         board[i][j] = Piece.EMPTY;

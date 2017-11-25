@@ -2,16 +2,11 @@ package Checkers;
 
 import Payers.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
-
 public class Game {
-    CheckersBoard checkersBoard;
-    Player player1;
-    Player player2;
-    Player toMove;
+    private final CheckersBoard checkersBoard;
+    private final Player player1;
+    private final Player player2;
+    private Player toMove;
 
     public Game(Player player1, Player player2){
         this.player1 = player1;

@@ -4,6 +4,8 @@ import Checkers.CheckersBoard;
 import Checkers.Piece;
 
 public class EvaluatorNeuralNet {
+
+
     //TODO just currently working as static evaluation function, willchange to NN later
     public double evaluate(CheckersBoard checkersBoard){
         double value = 0;
