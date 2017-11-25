@@ -263,10 +263,17 @@ public class CheckersBoard {
 
     public List<SimpleMove> allSimpleMovesBlackPawn(int row, int column){
         List<SimpleMove> legalSimpleMoves = new ArrayList<>();
-        if(column>0 && this.board[row+1][column-1].getAlliance()==null)
-            legalSimpleMoves.add(new SimpleMove(row,column,row+1,column-1));
-        if(column<7 && this.board[row+1][column+1].getAlliance()==null)
-            legalSimpleMoves.add(new SimpleMove(row,column,row+1,column+1));
+        try{
+            if(column>0 && this.board[row+1][column-1].getAlliance()==null)
+                legalSimpleMoves.add(new SimpleMove(row,column,row+1,column-1));
+            if(column<7 && this.board[row+1][column+1].getAlliance()==null)
+                legalSimpleMoves.add(new SimpleMove(row,column,row+1,column+1));
+        }catch (ArrayIndexOutOfBoundsException e){
+            System.err.println("row: "+row);
+            System.err.println("column: "+column);
+            System.err.println("Piece: "+ board[row][column]);
+            e.printStackTrace();
+        }
         return legalSimpleMoves;
     }
 

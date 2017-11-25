@@ -21,6 +21,6 @@ public class EvaluatorNeuralNet {
                 }
             }
         }
-        return value;
+        return value/24;
     }
 }

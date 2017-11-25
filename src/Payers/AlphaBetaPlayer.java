@@ -24,11 +24,12 @@ public class AlphaBetaPlayer extends Player{
         Move bestMove = null;
         double bestScore;
         if(this.getAlliance()==Alliance.WHITE){
-            bestScore = Double.MIN_VALUE;
+            bestScore = -1.0;
             for(Move move: legalMoves){
                 CheckersBoard boardCopy = checkersBoard.clone();
                 boardCopy.makeMove(move);
-                double currentScore = alphabeta(boardCopy, depth-1, Double.MIN_VALUE, Double.MAX_VALUE, Alliance.BLACK);
+                boardCopy.upgradeToKing(Alliance.WHITE);
+                double currentScore = alphabeta(boardCopy, depth-1, -1.0, 1.0, Alliance.BLACK);
                 if(currentScore > bestScore){
                     bestMove = move;
                     bestScore = currentScore;
@@ -36,11 +37,12 @@ public class AlphaBetaPlayer extends Player{
             }
         }
         else{
-            bestScore = Double.MAX_VALUE;
+            bestScore = 1.0;
             for(Move move: legalMoves){
                 CheckersBoard boardCopy = checkersBoard.clone();
                 boardCopy.makeMove(move);
-                double currentScore = alphabeta(boardCopy, depth-1, Double.MIN_VALUE, Double.MAX_VALUE, Alliance.WHITE);
+                boardCopy.upgradeToKing(Alliance.BLACK);
+                double currentScore = alphabeta(boardCopy, depth-1, -1.0, 1.0, Alliance.WHITE);
                 if(currentScore < bestScore){
                     bestMove = move;
                     bestScore = currentScore;
@@ -57,10 +59,11 @@ public class AlphaBetaPlayer extends Player{
         if(legalMoves.size()==0)
             return (alliance == Alliance.WHITE)? -1.0 : 1.0;
         if(alliance == Alliance.WHITE){
-            double currentBest = Double.MIN_VALUE;
+            double currentBest = -1.0;
             for(Move move: legalMoves){
                 CheckersBoard boardCopy = checkersBoard.clone();
                 boardCopy.makeMove(move);
+                boardCopy.upgradeToKing(Alliance.WHITE);
                 currentBest = Math.max(currentBest, alphabeta(boardCopy, depth-1, alpha, beta, Alliance.BLACK));
                 alpha = Math.max(alpha, currentBest);
                 if(beta <= alpha)
@@ -68,10 +71,11 @@ public class AlphaBetaPlayer extends Player{
             }
             return currentBest;
         }else{
-            double currentBest = Double.MAX_VALUE;
+            double currentBest = 1.0;
             for(Move move: legalMoves){
                 CheckersBoard boardCopy = checkersBoard.clone();
                 boardCopy.makeMove(move);
+                boardCopy.upgradeToKing(Alliance.BLACK);
                 currentBest = Math.min(currentBest, alphabeta(boardCopy, depth-1, alpha, beta, Alliance.WHITE));
                 beta = Math.min(beta, currentBest);
                 if(beta <= alpha)
