@@ -16,7 +16,7 @@ public class Game {
         toMove = player1;
     }
 
-    public void start(){
+    public int start(){
         //Make changes to alllow different players
         MatchResult result = MatchResult.DRAWN;
         int plyCount = 1;
@@ -28,19 +28,33 @@ public class Game {
             }
             checkersBoard.makeMove(nextMove);
             checkersBoard.upgradeToKing(toMove.getAlliance());
-            System.out.println("PlyCount: "+plyCount);
-            checkersBoard.showBoard();
+            //System.out.println("PlyCount: "+plyCount);
+            //checkersBoard.showBoard();
             plyCount++;
             toMove = toMove == player1 ? player2: player1;
         }while (plyCount < 200);
 
         if (plyCount == 200)
             result = MatchResult.DRAWN;
-        matchResult(toMove, result);
+        return matchResult(toMove, result);
     }
 
-    private void matchResult(Player toMove, MatchResult lost) {
-        System.out.println(toMove.getAlliance() + "has" + lost);
+    private int matchResult(Player toMove, MatchResult result) {
+        if(toMove.getAlliance()==Alliance.WHITE){
+            if(result == MatchResult.DRAWN)
+                return 0;
+            else if(result == MatchResult.LOST)
+                return -1;
+            else
+                return 1;
+        }else{
+            if(result == MatchResult.DRAWN)
+                return 0;
+            else if(result == MatchResult.LOST)
+                return 1;
+            else
+                return -1;
+        }
     }
 
 

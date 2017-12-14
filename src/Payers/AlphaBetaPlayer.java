@@ -66,9 +66,9 @@ public class AlphaBetaPlayer extends Player{
                 boardCopy.makeMove(move);
                 boardCopy.upgradeToKing(Alliance.WHITE);
                 currentBest = Math.max(currentBest, alphabeta(boardCopy, depth-1, alpha, beta, Alliance.BLACK));
-                alpha = Math.max(alpha, currentBest);
-                if(beta <= alpha)
+                if(currentBest >= beta)
                     break;
+                alpha = Math.max(alpha, currentBest);
             }
             return currentBest;
         }else{
@@ -78,9 +78,9 @@ public class AlphaBetaPlayer extends Player{
                 boardCopy.makeMove(move);
                 boardCopy.upgradeToKing(Alliance.BLACK);
                 currentBest = Math.min(currentBest, alphabeta(boardCopy, depth-1, alpha, beta, Alliance.WHITE));
-                beta = Math.min(beta, currentBest);
-                if(beta <= alpha)
+                if(currentBest <= alpha)
                     break;
+                beta = Math.min(beta, currentBest);
             }
             return currentBest;
         }
