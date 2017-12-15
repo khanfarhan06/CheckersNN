@@ -314,12 +314,25 @@ public class CheckersBoard implements Cloneable {
             board[finalRow][finalColumn] = board[initialRow][initialColumn];
             board[initialRow][initialColumn] = Piece.EMPTY;
         }
+        int finalColumn = jumpMove.jumps.get(jumpMove.jumps.size()-1).finalColumnPosition;
+        int finalRow = jumpMove.jumps.get(jumpMove.jumps.size()-1).finalRowPosition;
+
+        if(finalRow == 0 && board[finalRow][finalColumn] == Piece.WHITE_PAWN )
+            board[finalRow][finalColumn] = Piece.WHITE_KING;
+        if(finalRow == 7 && board[finalRow][finalColumn] == Piece.BLACK_PAWN )
+            board[finalRow][finalColumn] = Piece.BLACK_KING;
     }
 
     public void makeSimpleMove(SimpleMove simpleMove) {
         board[simpleMove.finalRowPosition][simpleMove.finalColumnPosition] = board[simpleMove.initialRowPosition][simpleMove.initialColumnPosition];
         board[simpleMove.initialRowPosition][simpleMove.initialColumnPosition] = Piece.EMPTY;
 
+        int finalRow = simpleMove.finalRowPosition;
+        int finalColumn = simpleMove.finalColumnPosition;
+        if(finalRow == 0 && board[finalRow][finalColumn] == Piece.WHITE_PAWN )
+            board[finalRow][finalColumn] = Piece.WHITE_KING;
+        if(finalRow == 7 && board[finalRow][finalColumn] == Piece.BLACK_PAWN )
+            board[finalRow][finalColumn] = Piece.BLACK_KING;
     }
 
     public void showBoard() {

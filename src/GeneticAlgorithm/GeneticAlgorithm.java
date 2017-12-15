@@ -6,6 +6,9 @@ import Checkers.MatchResult;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class GeneticAlgorithm {
     ArrayList<Individual> population;
@@ -31,11 +34,18 @@ public class GeneticAlgorithm {
 
                 populateWithNewIndividuals();
 
-                generationCount++;
+                resetRoundScores();
             }
+
+            generationCount++;
         }
 
         saveFinalIndividualsToFile();
+    }
+
+    private void resetRoundScores(){
+        for(Individual individual: population)
+            individual.resetRoundScores();
     }
 
     private void saveFinalIndividualsToFile(){
@@ -71,23 +81,19 @@ public class GeneticAlgorithm {
     }
 
     private void playTournament(){
+        ExecutorService executorService = Executors.newFixedThreadPool(individualCount*(individualCount-1));
         for(Individual individual: population){
-            for(Individual otherIndividual: population){
-                if(!individual.equals(otherIndividual)){
-                    Game game = new Game(individual.getPlayer(), otherIndividual.getPlayer());
-                    MatchResult matchResult = game.start();
-                    if(matchResult == MatchResult.WON){
-                        individual.updateRecordsForMatchWon();
-                        otherIndividual.updateRecordsForMatchLost();
-                    }else if(matchResult == MatchResult.LOST){
-                        individual.updateRecordsForMatchLost();
-                        otherIndividual.updateRecordsForMatchWon();
-                    }else if(matchResult == MatchResult.DRAWN){
-                        individual.updateRecordsForMatchDrawn();
-                        otherIndividual.updateRecordsForMatchDrawn();
-                    }
+            for(Individual otherIndividual: population) {
+                if (!individual.equals(otherIndividual)) {
+                    executorService.execute(new GameRunnable(individual, otherIndividual));
                 }
             }
+        }
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -95,6 +101,30 @@ public class GeneticAlgorithm {
         this.population = new ArrayList<Individual>();
         for (int i = 0; i < individualCount; i++) {
             population.add(new Individual(depth, nodeCountHiddenLayer1, nodeCountHiddenLayer2));
+        }
+    }
+
+    class GameRunnable implements Runnable{
+        Individual individual, otherIndividual;
+
+        public GameRunnable(Individual individual, Individual otherIndividual){
+            this.individual = individual;
+            this.otherIndividual = otherIndividual;
+        }
+        @Override
+        public void run() {
+            Game game = new Game(individual.getPlayer(), otherIndividual.getPlayer());
+            MatchResult matchResult = game.start();
+            if(matchResult == MatchResult.WON){
+                individual.updateRecordsForMatchWon();
+                otherIndividual.updateRecordsForMatchLost();
+            }else if(matchResult == MatchResult.LOST){
+                individual.updateRecordsForMatchLost();
+                otherIndividual.updateRecordsForMatchWon();
+            }else if(matchResult == MatchResult.DRAWN){
+                individual.updateRecordsForMatchDrawn();
+                otherIndividual.updateRecordsForMatchDrawn();
+            }
         }
     }
 }

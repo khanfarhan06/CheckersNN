@@ -22,25 +22,32 @@ public class Individual implements Serializable{
         return player;
     }
 
-    public void updateRecordsForMatchWon(){
+    public synchronized void updateRecordsForMatchWon(){
         roundMatchesPlayed++;
         roundMatchesWon++;
         totalMatchesPlayed++;
         totalMatchesWon++;
     }
 
-    public void updateRecordsForMatchDrawn(){
+    public synchronized void updateRecordsForMatchDrawn(){
         roundMatchesPlayed++;
         roundMatchesDrawn++;
         totalMatchesPlayed++;
         totalMatchesDrawn++;
     }
 
-    public void updateRecordsForMatchLost(){
+    public synchronized void updateRecordsForMatchLost(){
         roundMatchesPlayed++;
         roundMatchesLost++;
         totalMatchesPlayed++;
         totalMatchesLost++;
+    }
+
+    public void resetRoundScores(){
+        roundMatchesPlayed = 0;
+        roundMatchesWon = 0;
+        roundMatchesDrawn = 0;
+        roundMatchesLost = 0;
     }
 
     public int getRoundScore(){
