@@ -3,9 +3,10 @@ package NeuralNetwork;
 import Checkers.CheckersBoard;
 import Checkers.Piece;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class EvaluatorNeuralNet {
+public class EvaluatorNeuralNet implements Serializable{
 
     private static final int inputNodes = 32;
     private final int nodeCountHiddenLayer1, nodeCountHiddenLayer2;
@@ -28,6 +29,21 @@ public class EvaluatorNeuralNet {
         kingValue = 2;
     }
 
+    public EvaluatorNeuralNet(EvaluatorNeuralNet evaluatorNeuralNet){
+        this.nodeCountHiddenLayer1 = evaluatorNeuralNet.nodeCountHiddenLayer1;
+        this.nodeCountHiddenLayer2 = evaluatorNeuralNet.nodeCountHiddenLayer2;
+
+        weightInputToHidden1= new float[inputNodes][nodeCountHiddenLayer1];
+        weightHidden1ToHidden2 = new float[nodeCountHiddenLayer1][nodeCountHiddenLayer2];
+        weightHidden2ToOutput = new float[nodeCountHiddenLayer2];
+
+        initializeWithGaussianRandomChange(this.weightInputToHidden1, evaluatorNeuralNet.weightInputToHidden1);
+        initializeWithGaussianRandomChange(this.weightHidden1ToHidden2, evaluatorNeuralNet.weightHidden1ToHidden2);
+        initializeWithGaussianRandomChange(this.weightHidden2ToOutput, evaluatorNeuralNet.weightHidden2ToOutput);
+
+        this.kingValue = (float) (evaluatorNeuralNet.kingValue + Math.random()-0.5);
+    }
+
 
     public double evaluate(CheckersBoard checkersBoard){
         float[] input = getInputArray(checkersBoard);
@@ -38,6 +54,22 @@ public class EvaluatorNeuralNet {
 
         float evaluatedValue = activationFunction(multiply(outputOfHidden2, weightHidden2ToOutput));
         return evaluatedValue;
+    }
+
+    private void initializeWithGaussianRandomChange(float[][] newWeights, float[][] originalWeights){
+        for (int i = 0; i < originalWeights.length; i++) {
+            Random random = new Random();
+            for (int j = 0; j < originalWeights[0].length; j++) {
+                newWeights[i][j] = (float) (originalWeights[i][j] + random.nextGaussian());
+            }
+        }
+    }
+
+    private void initializeWithGaussianRandomChange(float[] newWeights, float[] originalWeights){
+        Random random = new Random();
+        for (int i = 0; i < originalWeights.length; i++) {
+                newWeights[i] = (float) (originalWeights[i] + random.nextGaussian());
+        }
     }
 
     private void initializeWithRandom(float[][] weights){

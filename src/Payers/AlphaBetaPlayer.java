@@ -5,16 +5,25 @@ import Checkers.CheckersBoard;
 import Checkers.Move;
 import NeuralNetwork.EvaluatorNeuralNet;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class AlphaBetaPlayer extends Player{
+public class AlphaBetaPlayer extends Player implements Serializable{
 
     private final EvaluatorNeuralNet evaluator;
     private final int depth;
-    public AlphaBetaPlayer(Alliance alliance,int depth, EvaluatorNeuralNet evaluator) {
-        super(alliance);
+
+    public AlphaBetaPlayer(int depth, EvaluatorNeuralNet evaluator) {
         this.depth = depth;
         this.evaluator = evaluator;
+    }
+
+    public EvaluatorNeuralNet getEvaluator() {
+        return evaluator;
+    }
+
+    public int getDepth() {
+        return depth;
     }
 
     @Override

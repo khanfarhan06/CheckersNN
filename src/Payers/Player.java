@@ -5,14 +5,14 @@ import Checkers.CheckersBoard;
 import Checkers.Move;
 
 public abstract class Player {
-    final Alliance alliance;
-
-    Player(Alliance alliance) {
-        this.alliance = alliance;
-    }
+    private Alliance alliance;
 
     public Alliance getAlliance() {
         return alliance;
+    }
+
+    public void setAlliance(Alliance alliance){
+        this.alliance = alliance;
     }
 
     abstract public Move bestMove(CheckersBoard checkersBoard);
