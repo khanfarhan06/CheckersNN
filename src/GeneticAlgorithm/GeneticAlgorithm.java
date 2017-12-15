@@ -26,11 +26,13 @@ public class GeneticAlgorithm {
 
             sortIndividuals();
 
-            killWeakIndividuals();
+            if(generationCount<maxNumberOfGenerations){
+                killWeakIndividuals();
 
-            populateWithNewIndividuals();
+                populateWithNewIndividuals();
 
-            generationCount++;
+                generationCount++;
+            }
         }
 
         saveFinalIndividualsToFile();
