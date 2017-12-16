@@ -1,6 +1,6 @@
 package GeneticAlgorithm;
 
-import NeuralNetwork.EvaluatorNeuralNet;
+import Evaluator.EvaluatorNeuralNet;
 import Payers.AlphaBetaPlayer;
 
 import java.io.Serializable;
@@ -15,7 +15,7 @@ public class Individual implements Serializable{
     }
 
     public Individual(Individual individual){
-        player = new AlphaBetaPlayer(individual.player.getDepth(), new EvaluatorNeuralNet(individual.player.getEvaluator()));
+        player = new AlphaBetaPlayer(individual.player.getDepth(), new EvaluatorNeuralNet((EvaluatorNeuralNet) individual.player.getEvaluator()));
     }
 
     public AlphaBetaPlayer getPlayer() {
@@ -52,5 +52,37 @@ public class Individual implements Serializable{
 
     public int getRoundScore(){
         return roundMatchesWon*2 + roundMatchesDrawn - roundMatchesLost*3;
+    }
+
+    public int getRoundMatchesPlayed() {
+        return roundMatchesPlayed;
+    }
+
+    public int getRoundMatchesWon() {
+        return roundMatchesWon;
+    }
+
+    public int getRoundMatchesLost() {
+        return roundMatchesLost;
+    }
+
+    public int getRoundMatchesDrawn() {
+        return roundMatchesDrawn;
+    }
+
+    public int getTotalMatchesPlayed() {
+        return totalMatchesPlayed;
+    }
+
+    public int getTotalMatchesWon() {
+        return totalMatchesWon;
+    }
+
+    public int getTotalMatchesLost() {
+        return totalMatchesLost;
+    }
+
+    public int getTotalMatchesDrawn() {
+        return totalMatchesDrawn;
     }
 }

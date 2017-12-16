@@ -1,10 +1,12 @@
 package Testing;
 
-import GeneticAlgorithm.GeneticAlgorithm;
+import GeneticAlgorithm.GeneticAlgorithmPlayingRandomPlayer;
 
 public class TestGeneticAlgorithm {
     public static void main(String[] args) {
-        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(10, 50,6,15,15);
+        GeneticAlgorithmPlayingRandomPlayer geneticAlgorithm = new GeneticAlgorithmPlayingRandomPlayer(15, 100,6,40,10,10);
         geneticAlgorithm.start();
+        geneticAlgorithm.saveFinalIndividualsToFile("./src/GeneticallyFoundIndividuals/FinalIndividualsAgainstRandomDepth6Gen100.dat");
     }
 }
+

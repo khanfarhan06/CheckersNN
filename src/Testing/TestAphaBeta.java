@@ -2,7 +2,7 @@ package Testing;
 
 import Checkers.Alliance;
 import Checkers.Game;
-import NeuralNetwork.EvaluatorNeuralNet;
+import Evaluator.EvaluatorNeuralNet;
 import Payers.AlphaBetaPlayer;
 import Payers.RandomPlayer;
 

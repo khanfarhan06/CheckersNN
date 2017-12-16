@@ -10,59 +10,106 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class TestReadObjectsFromFile {
     private static RandomPlayer randomPlayer = new RandomPlayer();
 
     public static void main(String[] args) {
         ArrayList<Individual> finalIndividuals = readIndividualsFromFile();
+
+        Collections.sort(finalIndividuals,
+                (a,b) -> Integer.compare((b.getTotalMatchesWon()*2 + b.getTotalMatchesDrawn())/b.getRoundMatchesPlayed(),
+                (a.getTotalMatchesWon()*2 + a.getTotalMatchesDrawn())/a.getRoundMatchesPlayed()));
+
+        printRecords(finalIndividuals);
+
+        /*int i=0;
+        for(Individual individual: finalIndividuals){
+            System.out.println("Individual : "+ i++);
+            playGame(individual);
+        }*/
+    }
+
+    private static void printRecords(ArrayList<Individual> finalIndividuals){
         int i=0;
         for(Individual individual: finalIndividuals){
-            System.out.println("====================================\nIndividual "+i);
-            playGame(individual);
+            System.out.println("====================================\nIndividual "+i++);
+            System.out.println("Total: "+individual.getTotalMatchesPlayed()+" "+individual.getTotalMatchesWon()+" "+
+                    individual.getTotalMatchesDrawn()+" "+individual.getTotalMatchesLost());
+            System.out.println("Total: "+individual.getRoundMatchesPlayed()+" "+individual.getRoundMatchesWon()+" "+
+                    individual.getRoundMatchesDrawn()+" "+individual.getRoundMatchesLost());
             System.out.println("====================================");
         }
     }
 
     private static void playGame(Individual individual){
-        int won = 0, lost = 0, drawn = 0;
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+        final int[] won = {0};
+        final int[] lost = { 0 };
+        final int[] drawn = { 0 };
         for (int i = 0; i < 100; i++) {
-            Game game = new Game(individual.getPlayer(), randomPlayer);
-            MatchResult matchResult = game.start();
-            if(matchResult == MatchResult.WON)
-                won++;
-            else if(matchResult == MatchResult.LOST)
-                lost++;
-            else
-                drawn++;
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Game game = new Game(individual.getPlayer(), randomPlayer);
+                    MatchResult matchResult = game.start();
+                    if(matchResult == MatchResult.WON)
+                        won[0]++;
+                    else if(matchResult == MatchResult.LOST)
+                        lost[0]++;
+                    else
+                        drawn[0]++;
+                }
+            });
         }
-        System.out.println("As WHITE: "+won +" "+drawn+" "+lost);
-        won = lost = drawn = 0;
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("As WHITE: "+ won[0] +" "+ drawn[0] +" "+ lost[0]);
+        executorService = Executors.newFixedThreadPool(100);
+        won[0] = lost[0] = drawn[0] = 0;
         for (int i = 0; i < 100; i++) {
-            Game game = new Game(randomPlayer, individual.getPlayer());
-            MatchResult matchResult = game.start();
-            if(matchResult == MatchResult.WON)
-                lost++;
-            else if(matchResult == MatchResult.LOST)
-                won++;
-            else
-                drawn++;
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Game game = new Game(randomPlayer, individual.getPlayer());
+                    MatchResult matchResult = game.start();
+                    if(matchResult == MatchResult.WON)
+                        lost[0]++;
+                    else if(matchResult == MatchResult.LOST)
+                        won[0]++;
+                    else
+                        drawn[0]++;
+                }
+            });
         }
-        System.out.println("As BLACK: "+won +" "+drawn+" "+lost);
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("As BLACK: "+ won[0] +" "+ drawn[0] +" "+ lost[0]);
     }
 
     private static ArrayList<Individual> readIndividualsFromFile(){
         ArrayList<Individual> finalIndividuals = new ArrayList<>();
         try {
-            FileInputStream fileInputStream = new FileInputStream("finalIndividuals.dat");
+            FileInputStream fileInputStream = new FileInputStream("finalIndividualsAgainstRandom.dat");
             try (ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
                 Individual individual;
-                System.out.println("Reading started");
                 int readCount = 0;
-                while (readCount<10){
-                    System.out.println("Read = " + ++readCount);
+                while (readCount<15){
                     individual = (Individual) objectInputStream.readObject();
                     finalIndividuals.add(individual);
+                    readCount++;
                 }
             } catch (IOException e) {
                 e.printStackTrace();

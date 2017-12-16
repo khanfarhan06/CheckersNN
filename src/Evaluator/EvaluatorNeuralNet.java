@@ -1,4 +1,4 @@
-package NeuralNetwork;
+package Evaluator;
 
 import Checkers.CheckersBoard;
 import Checkers.Piece;
@@ -6,7 +6,7 @@ import Checkers.Piece;
 import java.io.Serializable;
 import java.util.Random;
 
-public class EvaluatorNeuralNet implements Serializable{
+public class EvaluatorNeuralNet implements Serializable, Evaluator{
 
     private static final int inputNodes = 32;
     private final int nodeCountHiddenLayer1, nodeCountHiddenLayer2;
@@ -44,8 +44,8 @@ public class EvaluatorNeuralNet implements Serializable{
         this.kingValue = (float) (evaluatorNeuralNet.kingValue + Math.random()-0.5);
     }
 
-
-    public double evaluate(CheckersBoard checkersBoard){
+    @Override
+    public float evaluate(CheckersBoard checkersBoard){
         float[] input = getInputArray(checkersBoard);
 
         float[] outputOfHidden1 = activationFunction(multiply(input, weightInputToHidden1));

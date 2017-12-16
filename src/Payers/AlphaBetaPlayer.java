@@ -3,22 +3,22 @@ package Payers;
 import Checkers.Alliance;
 import Checkers.CheckersBoard;
 import Checkers.Move;
-import NeuralNetwork.EvaluatorNeuralNet;
+import Evaluator.Evaluator;
 
 import java.io.Serializable;
 import java.util.List;
 
 public class AlphaBetaPlayer extends Player implements Serializable{
 
-    private final EvaluatorNeuralNet evaluator;
+    private final Evaluator evaluator;
     private final int depth;
 
-    public AlphaBetaPlayer(int depth, EvaluatorNeuralNet evaluator) {
+    public AlphaBetaPlayer(int depth, Evaluator evaluator) {
         this.depth = depth;
         this.evaluator = evaluator;
     }
 
-    public EvaluatorNeuralNet getEvaluator() {
+    public Evaluator getEvaluator() {
         return evaluator;
     }
 
