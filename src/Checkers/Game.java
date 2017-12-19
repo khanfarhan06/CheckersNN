@@ -18,10 +18,22 @@ public class Game {
         toMove = player1;
     }
 
+    public Game(Player player1, Player player2, CheckersBoard checkersBoard, Alliance allianceToMove){
+        this.player1 = player1;
+        this.player2 = player2;
+        player1.setAlliance(Alliance.WHITE);
+        player2.setAlliance(Alliance.BLACK);
+        this.checkersBoard = checkersBoard;
+        this.toMove = (allianceToMove==Alliance.WHITE)? player1 : player2;
+    }
+
     public MatchResult start(){
         MatchResult result = MatchResult.DRAWN;
         int plyCount = 1;
         do{
+            System.out.println("Move :"+ toMove.getAlliance()+" Ply: "+plyCount);
+            this.checkersBoard.showBoard();
+
             Move nextMove = toMove.bestMove(checkersBoard.clone());
             if (nextMove==null){
                 if(toMove.getAlliance()==Alliance.WHITE)
